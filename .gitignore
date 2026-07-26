@@ -1,0 +1,22 @@
+# Environment / secrets — never commit real API keys
+.env
+.env.local
+*.key
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Node (if you later add tooling)
+node_modules/
+
+# Python (if you later add a backend)
+__pycache__/
+*.pyc
+venv/
+.venv/

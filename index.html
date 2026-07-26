@@ -1,0 +1,2381 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FarmSense AI – Smart Farm Assistant</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans:wght@400;500&display=swap');
+
+      :root {
+        --green-deep: #0a2e1a;
+        --green-mid: #1a5c34;
+        --green-bright: #2ecc71;
+        --green-glow: #4fffaa;
+        --gold: #f5c518;
+        --soil: #8b5e3c;
+        --cream: #f9f5ef;
+        --white: #ffffff;
+        --gray: #6b7280;
+        --red: #e74c3c;
+        --bg: #061510;
+        --card: #0d2b1e;
+        --border: #1e4a30;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Noto Sans', sans-serif;
+        background: var(--bg);
+        color: var(--white);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* ── HEADER ── */
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        background: rgba(10, 46, 26, 0.95);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(10px);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo-icon {
+        width: 38px;
+        height: 38px;
+        background: linear-gradient(
+          135deg,
+          var(--green-bright),
+          var(--green-glow)
+        );
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+      }
+
+      .logo-text {
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        font-size: 18px;
+        letter-spacing: -0.5px;
+      }
+
+      .logo-text span {
+        color: var(--green-bright);
+      }
+
+      .badge {
+        font-size: 10px;
+        background: var(--green-mid);
+        color: var(--green-glow);
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+
+      /* ── TABS ── */
+      .tabs {
+        display: flex;
+        background: var(--green-deep);
+        border-bottom: 1px solid var(--border);
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab {
+        flex: 1;
+        min-width: 80px;
+        padding: 12px 8px;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--gray);
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        white-space: nowrap;
+        letter-spacing: 0.3px;
+      }
+
+      .tab.active {
+        color: var(--green-bright);
+        border-bottom-color: var(--green-bright);
+        background: rgba(46, 204, 113, 0.05);
+      }
+
+      .tab-icon {
+        display: block;
+        font-size: 18px;
+        margin-bottom: 2px;
+      }
+
+      /* ── SCREENS ── */
+      .screen {
+        display: none;
+        padding: 16px;
+        animation: fadeIn 0.3s ease;
+      }
+      .screen.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ── HERO ── */
+      .hero {
+        background: linear-gradient(
+          135deg,
+          var(--green-deep) 0%,
+          #0d3320 50%,
+          #071a10 100%
+        );
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px 20px;
+        margin-bottom: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::before {
+        content: '';
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 180px;
+        height: 180px;
+        background: radial-gradient(
+          circle,
+          rgba(46, 204, 113, 0.15) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+      }
+
+      .hero-label {
+        font-size: 10px;
+        color: var(--green-glow);
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      .hero h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 8px;
+      }
+
+      .hero h1 em {
+        font-style: normal;
+        color: var(--green-bright);
+      }
+
+      .hero p {
+        font-size: 13px;
+        color: #9db8a8;
+        line-height: 1.6;
+        margin-bottom: 16px;
+      }
+
+      .lang-pills {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .pill {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        color: var(--green-glow);
+        background: rgba(46, 204, 113, 0.08);
+      }
+
+      /* ── STATS ROW ── */
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .stat-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 12px;
+        text-align: center;
+      }
+
+      .stat-num {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--green-bright);
+        line-height: 1;
+      }
+
+      .stat-label {
+        font-size: 10px;
+        color: var(--gray);
+        margin-top: 4px;
+        font-weight: 500;
+      }
+
+      /* ── SECTION TITLE ── */
+      .section-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 10px;
+      }
+
+      /* ── QUICK ACTION CARDS ── */
+      .quick-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .quick-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .quick-card:hover,
+      .quick-card:active {
+        border-color: var(--green-bright);
+        transform: translateY(-2px);
+        background: #112b1e;
+      }
+
+      .quick-card-icon {
+        font-size: 28px;
+        margin-bottom: 8px;
+        display: block;
+      }
+      .quick-card-title {
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 3px;
+      }
+      .quick-card-sub {
+        font-size: 11px;
+        color: var(--gray);
+      }
+
+      /* ── CHAT SCREEN ── */
+      .chat-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        margin-bottom: 12px;
+      }
+
+      .chat-avatar {
+        width: 42px;
+        height: 42px;
+        background: linear-gradient(
+          135deg,
+          var(--green-mid),
+          var(--green-bright)
+        );
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+
+      .chat-status {
+        font-size: 11px;
+        color: var(--green-bright);
+        font-weight: 500;
+      }
+      .chat-name {
+        font-weight: 700;
+        font-size: 15px;
+      }
+
+      .lang-select {
+        margin-left: auto;
+        background: var(--green-deep);
+        color: var(--green-glow);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 6px 10px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .chat-messages {
+        height: 340px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 4px 0 8px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+      }
+
+      .msg {
+        max-width: 85%;
+        padding: 12px 14px;
+        border-radius: 16px;
+        font-size: 13px;
+        line-height: 1.6;
+        animation: msgIn 0.25s ease;
+      }
+
+      @keyframes msgIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .msg.ai {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-bottom-left-radius: 4px;
+        align-self: flex-start;
+        color: #d4ead9;
+      }
+
+      .msg.user {
+        background: var(--green-mid);
+        border-bottom-right-radius: 4px;
+        align-self: flex-end;
+        color: var(--white);
+      }
+
+      .msg-sender {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--green-glow);
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+
+      .typing-indicator {
+        display: none;
+        align-self: flex-start;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        border-bottom-left-radius: 4px;
+        padding: 12px 16px;
+      }
+
+      .typing-dots {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+      }
+      .typing-dots span {
+        width: 6px;
+        height: 6px;
+        background: var(--green-bright);
+        border-radius: 50%;
+        animation: bounce 1.2s infinite;
+      }
+      .typing-dots span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing-dots span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes bounce {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+        }
+        30% {
+          transform: translateY(-6px);
+        }
+      }
+
+      .chat-input-area {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+        margin-top: 10px;
+      }
+
+      .chat-input {
+        flex: 1;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px 14px;
+        color: var(--white);
+        font-size: 13px;
+        font-family: 'Noto Sans', sans-serif;
+        resize: none;
+        outline: none;
+        min-height: 46px;
+        max-height: 100px;
+        line-height: 1.5;
+        transition: border-color 0.2s;
+      }
+
+      .chat-input:focus {
+        border-color: var(--green-bright);
+      }
+      .chat-input::placeholder {
+        color: #4a6b56;
+      }
+
+      .btn-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: all 0.2s;
+        flex-shrink: 0;
+      }
+
+      .btn-send {
+        background: var(--green-bright);
+        color: var(--green-deep);
+      }
+
+      .btn-send:hover {
+        background: var(--green-glow);
+        transform: scale(1.05);
+      }
+      .btn-send:disabled {
+        background: var(--border);
+        color: var(--gray);
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .btn-mic {
+        background: var(--card);
+        border: 1px solid var(--border);
+        color: var(--green-bright);
+      }
+
+      .btn-mic.listening {
+        background: rgba(231, 76, 60, 0.2);
+        border-color: var(--red);
+        color: var(--red);
+        animation: pulse 1s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 0 8px rgba(231, 76, 60, 0);
+        }
+      }
+
+      .btn-upload {
+        background: var(--card);
+        border: 1px solid var(--border);
+        color: var(--green-bright);
+      }
+      .btn-upload:hover {
+        border-color: var(--green-bright);
+      }
+
+      .img-preview-bar {
+        display: none;
+        align-items: center;
+        gap: 10px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 8px 10px;
+        margin-top: 8px;
+      }
+      .img-preview-bar.show {
+        display: flex;
+      }
+      .img-preview-thumb {
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 1px solid var(--border);
+      }
+      .img-preview-name {
+        flex: 1;
+        font-size: 11px;
+        color: #9db8a8;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .img-preview-remove {
+        background: none;
+        border: none;
+        color: var(--red);
+        font-size: 16px;
+        cursor: pointer;
+        padding: 4px 8px;
+      }
+      .msg-img {
+        max-width: 100%;
+        border-radius: 10px;
+        margin-bottom: 6px;
+        display: block;
+      }
+
+      .quick-prompts {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 8px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding-bottom: 2px;
+      }
+      .quick-prompts::-webkit-scrollbar {
+        display: none;
+      }
+
+      .qp-btn {
+        white-space: nowrap;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--green-glow);
+        cursor: pointer;
+        transition: all 0.2s;
+        flex-shrink: 0;
+      }
+
+      .qp-btn:hover {
+        border-color: var(--green-bright);
+        background: rgba(46, 204, 113, 0.1);
+      }
+
+      /* ── USSD SCREEN ── */
+      .ussd-phone {
+        background: #111;
+        border-radius: 32px;
+        border: 3px solid #333;
+        max-width: 280px;
+        margin: 0 auto;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      }
+
+      .ussd-screen {
+        background: #1a2e22;
+        min-height: 180px;
+        padding: 20px 16px;
+        font-family: 'Courier New', monospace;
+        font-size: 13px;
+        color: #7fff7f;
+        line-height: 1.7;
+        border-bottom: 1px solid #333;
+      }
+
+      .ussd-screen .ussd-title {
+        color: var(--gold);
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+
+      .ussd-keypad {
+        background: #1a1a1a;
+        padding: 16px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .ussd-key {
+        background: #2a2a2a;
+        border: none;
+        color: #fff;
+        border-radius: 8px;
+        padding: 14px 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.1s;
+        text-align: center;
+      }
+
+      .ussd-key:active {
+        background: #3a5a3a;
+      }
+      .ussd-key.send {
+        background: var(--green-mid);
+        color: #fff;
+      }
+      .ussd-key.clear {
+        background: #4a2a2a;
+        color: #ff7f7f;
+      }
+
+      .ussd-input-bar {
+        background: #0d1f14;
+        padding: 10px 16px;
+        font-family: 'Courier New', monospace;
+        color: #7fff7f;
+        font-size: 14px;
+        border-bottom: 1px solid #333;
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+      }
+
+      .ussd-cursor {
+        display: inline-block;
+        width: 8px;
+        height: 14px;
+        background: #7fff7f;
+        animation: blink 1s step-end infinite;
+        margin-left: 2px;
+        vertical-align: middle;
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* ── CREDIT SCREEN ── */
+      .credit-card-ui {
+        background: linear-gradient(135deg, #1a5c34, #0a2e1a);
+        border: 1px solid var(--green-bright);
+        border-radius: 20px;
+        padding: 24px 20px;
+        margin-bottom: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .credit-card-ui::after {
+        content: '🌾';
+        position: absolute;
+        right: 20px;
+        bottom: 10px;
+        font-size: 60px;
+        opacity: 0.1;
+      }
+
+      .credit-label {
+        font-size: 11px;
+        color: #9db8a8;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .credit-name {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 6px 0 2px;
+      }
+      .credit-id {
+        font-size: 12px;
+        color: #9db8a8;
+        margin-bottom: 16px;
+        font-family: monospace;
+        letter-spacing: 2px;
+      }
+
+      .credit-score-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .score-ring {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: conic-gradient(
+          var(--green-bright) 0% 78%,
+          rgba(255, 255, 255, 0.1) 78% 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .score-ring::before {
+        content: '';
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        background: #1a5c34;
+        border-radius: 50%;
+      }
+
+      .score-num {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--green-glow);
+        position: relative;
+        z-index: 1;
+      }
+
+      .credit-details {
+        flex: 1;
+      }
+      .credit-detail-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+      }
+      .credit-detail-label {
+        font-size: 11px;
+        color: #9db8a8;
+      }
+      .credit-detail-val {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--green-bright);
+      }
+
+      .credit-form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #9db8a8;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+
+      .form-input,
+      .form-select {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 14px;
+        color: var(--white);
+        font-size: 13px;
+        font-family: 'Noto Sans', sans-serif;
+        outline: none;
+        width: 100%;
+        transition: border-color 0.2s;
+      }
+
+      .form-input:focus,
+      .form-select:focus {
+        border-color: var(--green-bright);
+      }
+      .form-select option {
+        background: #0d2b1e;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--green-bright), #27ae60);
+        color: var(--green-deep);
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        font-size: 14px;
+        font-weight: 700;
+        font-family: 'Space Grotesk', sans-serif;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.2s;
+        letter-spacing: 0.3px;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
+      }
+
+      /* ── SATELLITE SCREEN ── */
+      .satellite-map {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 16px;
+        position: relative;
+      }
+
+      .map-canvas {
+        width: 100%;
+        height: 220px;
+        background:
+          repeating-linear-gradient(
+            0deg,
+            rgba(46, 204, 113, 0.03) 0px,
+            rgba(46, 204, 113, 0.03) 1px,
+            transparent 1px,
+            transparent 40px
+          ),
+          repeating-linear-gradient(
+            90deg,
+            rgba(46, 204, 113, 0.03) 0px,
+            rgba(46, 204, 113, 0.03) 1px,
+            transparent 1px,
+            transparent 40px
+          ),
+          radial-gradient(
+            ellipse 60% 50% at 40% 50%,
+            rgba(46, 204, 113, 0.2) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 30% 40% at 75% 40%,
+            rgba(245, 197, 24, 0.15) 0%,
+            transparent 50%
+          ),
+          #061a10;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: crosshair;
+      }
+
+      .map-overlay {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 11px;
+        font-family: monospace;
+        color: var(--green-glow);
+        line-height: 1.6;
+      }
+
+      .health-zones {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .zone {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 600;
+      }
+
+      .zone-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .scan-line {
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--green-glow),
+          transparent
+        );
+        top: 0;
+        animation: scan 3s linear infinite;
+        opacity: 0.6;
+      }
+
+      @keyframes scan {
+        from {
+          top: 0%;
+        }
+        to {
+          top: 100%;
+        }
+      }
+
+      .sat-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .sat-stat {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+      }
+
+      .sat-stat-label {
+        font-size: 10px;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+      }
+      .sat-stat-val {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+      }
+      .sat-stat-sub {
+        font-size: 10px;
+        color: var(--gray);
+        margin-top: 2px;
+      }
+
+      .good {
+        color: var(--green-bright);
+      }
+      .warn {
+        color: var(--gold);
+      }
+      .bad {
+        color: var(--red);
+      }
+
+      /* ── MODAL ── */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 200;
+        align-items: flex-end;
+        justify-content: center;
+      }
+
+      .modal-overlay.open {
+        display: flex;
+      }
+
+      .modal {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 24px 24px 0 0;
+        width: 100%;
+        max-width: 500px;
+        padding: 24px 20px;
+        animation: slideUp 0.3s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(100%);
+        }
+        to {
+          transform: translateY(0);
+        }
+      }
+
+      .modal-handle {
+        width: 40px;
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        margin: 0 auto 20px;
+      }
+
+      .modal-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .modal-sub {
+        font-size: 13px;
+        color: var(--gray);
+        margin-bottom: 20px;
+      }
+
+      .result-box {
+        background: var(--green-deep);
+        border: 1px solid var(--green-mid);
+        border-radius: 12px;
+        padding: 16px;
+        font-size: 13px;
+        line-height: 1.7;
+        color: #d4ead9;
+        margin-bottom: 16px;
+        min-height: 80px;
+      }
+
+      .close-btn {
+        background: var(--border);
+        color: var(--white);
+        border: none;
+        border-radius: 12px;
+        padding: 12px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      /* ── ALERT ── */
+      .alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        background: rgba(245, 197, 24, 0.08);
+        border: 1px solid rgba(245, 197, 24, 0.3);
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin-bottom: 12px;
+        font-size: 12px;
+        color: #e8d87a;
+        line-height: 1.5;
+      }
+
+      .alert-icon {
+        font-size: 16px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 2px;
+      }
+
+      /* ── AMD PERFORMANCE PANEL ── */
+      .amd-panel {
+        background: linear-gradient(135deg, #1a0a00, #2d1200);
+        border: 1px solid #e05c00;
+        border-radius: 14px;
+        padding: 14px 16px;
+        margin-bottom: 16px;
+      }
+
+      .amd-panel-title {
+        font-size: 10px;
+        font-weight: 700;
+        color: #e05c00;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .amd-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .amd-metric {
+        text-align: center;
+      }
+
+      .amd-metric-val {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: #ff7a1a;
+        line-height: 1;
+      }
+
+      .amd-metric-label {
+        font-size: 9px;
+        color: #9b6a40;
+        margin-top: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .amd-status-bar {
+        margin-top: 10px;
+        height: 3px;
+        background: rgba(224, 92, 0, 0.2);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+
+      .amd-status-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #e05c00, #ff9a4a);
+        border-radius: 2px;
+        animation: amdPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes amdPulse {
+        0%,
+        100% {
+          width: 60%;
+          opacity: 0.8;
+        }
+        50% {
+          width: 95%;
+          opacity: 1;
+        }
+      }
+
+      .powered-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(224, 92, 0, 0.12);
+        border: 1px solid rgba(224, 92, 0, 0.3);
+        border-radius: 20px;
+        padding: 3px 10px;
+        font-size: 10px;
+        font-weight: 700;
+        color: #ff7a1a;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header>
+      <div class="logo">
+        <div class="logo-icon">🌾</div>
+        <div>
+          <div class="logo-text">Farm<span>Sense</span> AI</div>
+          <div style="font-size: 10px; color: var(--gray)">
+            Smart Farm Assistant
+          </div>
+        </div>
+      </div>
+      <div class="badge">● LIVE</div>
+    </header>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('home')">
+        <span class="tab-icon">🏠</span>Home
+      </div>
+      <div class="tab" onclick="showTab('chat')">
+        <span class="tab-icon">🤖</span>AI Chat
+      </div>
+      <div class="tab" onclick="showTab('ussd')">
+        <span class="tab-icon">📱</span>USSD
+      </div>
+      <div class="tab" onclick="showTab('credit')">
+        <span class="tab-icon">💳</span>Credit
+      </div>
+      <div class="tab" onclick="showTab('satellite')">
+        <span class="tab-icon">🛰️</span>Satellite
+      </div>
+    </div>
+
+    <!-- ══════════════ HOME ══════════════ -->
+    <div class="screen active" id="screen-home">
+      <div class="hero">
+        <div class="hero-label">⚡ Powered by Gemma 4</div>
+        <h1>Smart farming for every <em>Nigerian</em> farmer</h1>
+        <p>
+          Crop diagnosis, financial credit, satellite farm monitoring — in your
+          language, on any phone.
+        </p>
+        <div class="lang-pills">
+          <div class="pill">🇳🇬 English</div>
+          <div class="pill">Hausa</div>
+          <div class="pill">Yoruba</div>
+          <div class="pill">Igbo</div>
+          <div class="pill">Pidgin</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num">4M+</div>
+          <div class="stat-label">Farmers Reached</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">36</div>
+          <div class="stat-label">States Covered</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">98%</div>
+          <div class="stat-label">Accuracy Rate</div>
+        </div>
+      </div>
+
+      <div class="alert">
+        <span class="alert-icon">⚠️</span>
+        <span
+          ><strong>Alert — Kano Region:</strong> Fall armyworm detected in 3
+          LGAs. Tap AI Chat for immediate treatment advice.</span
+        >
+      </div>
+
+      <!-- AMD PERFORMANCE PANEL -->
+      <div class="amd-panel">
+        <div class="amd-panel-title">⚡ Gemma 4 · Live Inference Stats</div>
+        <div class="amd-metrics">
+          <div class="amd-metric">
+            <div class="amd-metric-val" id="amdLatency">—</div>
+            <div class="amd-metric-label">Latency (ms)</div>
+          </div>
+          <div class="amd-metric">
+            <div class="amd-metric-val" id="amdTokens">—</div>
+            <div class="amd-metric-label">Tokens/sec</div>
+          </div>
+          <div class="amd-metric">
+            <div class="amd-metric-val" id="amdQueries">0</div>
+            <div class="amd-metric-label">AI Queries</div>
+          </div>
+        </div>
+        <div class="amd-status-bar"><div class="amd-status-fill"></div></div>
+        <div class="powered-tag">🟢 Google AI Studio · Gemma 4</div>
+      </div>
+
+      <div class="section-title">What can I help you with?</div>
+      <div class="quick-grid">
+        <div
+          class="quick-card"
+          onclick="
+            goToChat(
+              'My maize leaves are turning yellow and I see small holes. What is wrong?',
+            )
+          ">
+          <span class="quick-card-icon">🌽</span>
+          <div class="quick-card-title">Diagnose Crop Disease</div>
+          <div class="quick-card-sub">Describe symptoms</div>
+        </div>
+        <div
+          class="quick-card"
+          onclick="
+            goToChat(
+              'When is the best time to plant tomatoes in northern Nigeria?',
+            )
+          ">
+          <span class="quick-card-icon">📅</span>
+          <div class="quick-card-title">Planting Calendar</div>
+          <div class="quick-card-sub">Seasonal advice</div>
+        </div>
+        <div
+          class="quick-card"
+          onclick="
+            goToChat(
+              'What pesticide should I use for grasshopper infestation on my cassava farm?',
+            )
+          ">
+          <span class="quick-card-icon">🐛</span>
+          <div class="quick-card-title">Pest Control</div>
+          <div class="quick-card-sub">Treatment guide</div>
+        </div>
+        <div class="quick-card" onclick="showTab('credit')">
+          <span class="quick-card-icon">💰</span>
+          <div class="quick-card-title">Farm Credit</div>
+          <div class="quick-card-sub">Check eligibility</div>
+        </div>
+      </div>
+
+      <div class="section-title">Latest Market Prices</div>
+      <div
+        style="
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 14px;
+          overflow: hidden;
+          margin-bottom: 20px;
+        ">
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            font-size: 10px;
+            color: var(--gray);
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+          ">
+          <span>Crop</span><span>Price/Bag</span><span>Change</span>
+        </div>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            font-size: 13px;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+          ">
+          <span>🌽 Maize</span><span style="font-weight: 700">₦18,500</span
+          ><span style="color: var(--green-bright)">+4.2%</span>
+        </div>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            font-size: 13px;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+          ">
+          <span>🍠 Yam</span><span style="font-weight: 700">₦42,000</span
+          ><span style="color: var(--red)">-1.8%</span>
+        </div>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            font-size: 13px;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+          ">
+          <span>🍅 Tomato</span><span style="font-weight: 700">₦28,000</span
+          ><span style="color: var(--green-bright)">+12.1%</span>
+        </div>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            font-size: 13px;
+            padding: 12px 14px;
+          ">
+          <span>🌿 Soya</span><span style="font-weight: 700">₦61,000</span
+          ><span style="color: var(--gold)">+0.3%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ AI CHAT ══════════════ -->
+    <div class="screen" id="screen-chat">
+      <div class="chat-header">
+        <div class="chat-avatar">🤖</div>
+        <div>
+          <div class="chat-name">FarmSense AI</div>
+          <div class="chat-status">
+            ● Online ·
+            <span style="color: #ff7a1a">⚡ Gemma 4 · Google AI Studio</span>
+          </div>
+        </div>
+        <select class="lang-select" id="langSelect">
+          <option value="English">🇳🇬 English</option>
+          <option value="Hausa">Hausa</option>
+          <option value="Yoruba">Yoruba</option>
+          <option value="Igbo">Igbo</option>
+          <option value="Nigerian Pidgin">Pidgin</option>
+        </select>
+      </div>
+
+      <div class="quick-prompts">
+        <button
+          class="qp-btn"
+          onclick="sendQuick('My cassava leaves are turning brown')">
+          Cassava disease
+        </button>
+        <button
+          class="qp-btn"
+          onclick="sendQuick('Best fertilizer for rice farming in Nigeria')">
+          Fertilizer advice
+        </button>
+        <button
+          class="qp-btn"
+          onclick="sendQuick('How do I store yam to prevent rotting?')">
+          Storage tips
+        </button>
+        <button
+          class="qp-btn"
+          onclick="
+            sendQuick('Rain don dey too much, wetin I go do for my farm?')
+          ">
+          Pidgin question
+        </button>
+        <button
+          class="qp-btn"
+          onclick="sendQuick('Mi noma ya fara bushe, ina matsalar?')">
+          Hausa question
+        </button>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg ai">
+          <div class="msg-sender">🌾 FarmSense AI</div>
+          Sannu! Hello! Welcome to FarmSense AI 🌱<br /><br />
+          I am your smart farming assistant. Ask me anything about:<br />
+          • Crop diseases & treatments<br />
+          • Pest control<br />
+          • Planting seasons<br />
+          • Market prices<br />
+          • Farm financing<br /><br />
+          You can type in
+          <strong>English, Hausa, Yoruba, Igbo, or Pidgin!</strong>
+        </div>
+        <div class="typing-indicator" id="typingIndicator">
+          <div class="typing-dots"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+
+      <div class="img-preview-bar" id="imgPreviewBar">
+        <img
+          class="img-preview-thumb"
+          id="imgPreviewThumb"
+          src=""
+          alt="Selected crop photo" />
+        <span class="img-preview-name" id="imgPreviewName"></span>
+        <button
+          class="img-preview-remove"
+          onclick="removeImage()"
+          title="Remove photo">
+          ✕
+        </button>
+      </div>
+
+      <div class="chat-input-area">
+        <input
+          type="file"
+          id="imageInput"
+          accept="image/*"
+          capture="environment"
+          style="display: none"
+          onchange="handleImageSelect(event)" />
+        <button
+          class="btn-icon btn-upload"
+          id="uploadBtn"
+          onclick="document.getElementById('imageInput').click()"
+          title="Upload crop photo">
+          📷
+        </button>
+        <button
+          class="btn-icon btn-mic"
+          id="micBtn"
+          onclick="toggleMic()"
+          title="Voice input">
+          🎤
+        </button>
+        <textarea
+          class="chat-input"
+          id="chatInput"
+          placeholder="Ask about your farm, or attach a photo..."
+          rows="1"
+          onkeydown="
+            if (event.key === 'Enter' && !event.shiftKey) {
+              event.preventDefault();
+              sendMessage();
+            }
+          "
+          oninput="
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+          "></textarea>
+        <button class="btn-icon btn-send" id="sendBtn" onclick="sendMessage()">
+          ➤
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════ USSD ══════════════ -->
+    <div class="screen" id="screen-ussd">
+      <div style="text-align: center; margin-bottom: 16px">
+        <div
+          class="section-title"
+          style="text-align: center; margin-bottom: 4px">
+          USSD Simulator
+        </div>
+        <div style="font-size: 12px; color: var(--gray)">
+          Dial *347*55# on any phone — even button phones
+        </div>
+      </div>
+
+      <div class="ussd-phone">
+        <div class="ussd-screen">
+          <div class="ussd-title" id="ussdTitle">📶 *347*55#</div>
+          <div id="ussdContent">
+            Welcome to FarmSense AI ━━━━━━━━━━━━━━ 1. Crop Diagnosis 2. Weather
+            Forecast 3. Market Prices 4. Farm Credit 5. Pest Alert 0. Exit Reply
+            with number:
+          </div>
+        </div>
+        <div class="ussd-input-bar">
+          <span id="ussdInput"></span><span class="ussd-cursor"></span>
+        </div>
+        <div class="ussd-keypad">
+          <button class="ussd-key" onclick="ussdPress('1')">1</button>
+          <button class="ussd-key" onclick="ussdPress('2')">2</button>
+          <button class="ussd-key" onclick="ussdPress('3')">3</button>
+          <button class="ussd-key" onclick="ussdPress('4')">4</button>
+          <button class="ussd-key" onclick="ussdPress('5')">5</button>
+          <button class="ussd-key" onclick="ussdPress('6')">6</button>
+          <button class="ussd-key" onclick="ussdPress('7')">7</button>
+          <button class="ussd-key" onclick="ussdPress('8')">8</button>
+          <button class="ussd-key" onclick="ussdPress('9')">9</button>
+          <button class="ussd-key clear" onclick="ussdClear()">⌫</button>
+          <button class="ussd-key" onclick="ussdPress('0')">0</button>
+          <button class="ussd-key send" onclick="ussdSend()">OK</button>
+        </div>
+      </div>
+
+      <div
+        style="
+          margin-top: 16px;
+          padding: 14px;
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 12px;
+          font-size: 12px;
+          color: var(--gray);
+          text-align: center;
+          line-height: 1.6;
+        ">
+        ✅ Works on
+        <strong style="color: var(--white)">ANY mobile network</strong> — MTN,
+        Airtel, Glo, 9mobile<br />
+        ✅ No internet needed — works on
+        <strong style="color: var(--white)">basic button phones</strong><br />
+        ✅ Free of charge for all registered farmers
+      </div>
+    </div>
+
+    <!-- ══════════════ CREDIT ══════════════ -->
+    <div class="screen" id="screen-credit">
+      <div class="credit-card-ui">
+        <div class="credit-label">Farm Credit Score</div>
+        <div class="credit-name">Haroon — Verified Farmer</div>
+        <div class="credit-id">NGA · KW · 2026 · 00847</div>
+        <div class="credit-score-row">
+          <div class="score-ring">
+            <div class="score-num">782</div>
+          </div>
+          <div class="credit-details">
+            <div class="credit-detail-row">
+              <span class="credit-detail-label">Credit Limit</span>
+              <span class="credit-detail-val">₦350,000</span>
+            </div>
+            <div class="credit-detail-row">
+              <span class="credit-detail-label">Status</span>
+              <span class="credit-detail-val good">✓ Eligible</span>
+            </div>
+            <div class="credit-detail-row">
+              <span class="credit-detail-label">Farm Size</span>
+              <span class="credit-detail-val">2.5 hectares</span>
+            </div>
+            <div class="credit-detail-row">
+              <span class="credit-detail-label">Satellite Verified</span>
+              <span class="credit-detail-val good">✓ Yes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Apply for Farm Credit</div>
+      <div class="credit-form">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input
+            type="text"
+            class="form-input"
+            id="creditName"
+            placeholder="e.g. Musa Abdullahi" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">State</label>
+          <select class="form-select" id="creditState">
+            <option value="">Select your state...</option>
+            <option>Kwara</option>
+            <option>Kano</option>
+            <option>Kaduna</option>
+            <option>Niger</option>
+            <option>Oyo</option>
+            <option>Anambra</option>
+            <option>Rivers</option>
+            <option>Lagos</option>
+            <option>Borno</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Main Crop</label>
+          <select class="form-select" id="creditCrop">
+            <option value="">Select crop...</option>
+            <option>Maize</option>
+            <option>Rice</option>
+            <option>Cassava</option>
+            <option>Yam</option>
+            <option>Tomato</option>
+            <option>Soybean</option>
+            <option>Cotton</option>
+            <option>Groundnut</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Farm Size (Hectares)</label>
+          <input
+            type="number"
+            class="form-input"
+            id="creditFarmSize"
+            placeholder="e.g. 2.5"
+            min="0.1"
+            step="0.1" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Loan Amount Needed (₦)</label>
+          <input
+            type="number"
+            class="form-input"
+            id="creditLoanAmount"
+            placeholder="e.g. 150000" />
+        </div>
+        <button class="btn-primary" onclick="checkCredit()">
+          🔍 Check Eligibility with AI
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════ SATELLITE ══════════════ -->
+    <div class="screen" id="screen-satellite">
+      <div class="section-title">Farm Health Monitor</div>
+
+      <div class="satellite-map">
+        <div class="map-canvas" onclick="scanFarm()">
+          <div class="scan-line"></div>
+          <div class="map-overlay">
+            📍 Lat: 8.4799° N<br />
+            Lon: 4.5418° E<br />
+            Zone: Kwara State<br />
+            Last scan: Today
+          </div>
+          <div class="health-zones">
+            <div class="zone">
+              <div class="zone-dot" style="background: #2ecc71"></div>
+              <span style="color: #2ecc71">Healthy</span>
+            </div>
+            <div class="zone">
+              <div class="zone-dot" style="background: #f5c518"></div>
+              <span style="color: #f5c518">Stress</span>
+            </div>
+            <div class="zone">
+              <div class="zone-dot" style="background: #e74c3c"></div>
+              <span style="color: #e74c3c">Disease</span>
+            </div>
+          </div>
+          <div
+            style="
+              text-align: center;
+              color: rgba(46, 204, 113, 0.4);
+              font-size: 40px;
+            ">
+            🛰️
+          </div>
+          <div
+            style="
+              position: absolute;
+              bottom: 10px;
+              left: 50%;
+              transform: translateX(-50%);
+              font-size: 11px;
+              color: rgba(46, 204, 113, 0.5);
+              white-space: nowrap;
+            ">
+            Tap to run satellite scan
+          </div>
+        </div>
+      </div>
+
+      <div class="sat-stats">
+        <div class="sat-stat">
+          <div class="sat-stat-label">NDVI Score</div>
+          <div class="sat-stat-val good" id="ndviVal">0.74</div>
+          <div class="sat-stat-sub">Vegetation Health</div>
+        </div>
+        <div class="sat-stat">
+          <div class="sat-stat-label">Soil Moisture</div>
+          <div class="sat-stat-val warn" id="soilVal">42%</div>
+          <div class="sat-stat-sub">Needs irrigation</div>
+        </div>
+        <div class="sat-stat">
+          <div class="sat-stat-label">Crop Cover</div>
+          <div class="sat-stat-val good" id="coverVal">87%</div>
+          <div class="sat-stat-sub">Excellent growth</div>
+        </div>
+        <div class="sat-stat">
+          <div class="sat-stat-label">Disease Risk</div>
+          <div class="sat-stat-val warn" id="riskVal">Medium</div>
+          <div class="sat-stat-sub">Monitor closely</div>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        onclick="scanFarm()"
+        style="margin-bottom: 12px">
+        🛰️ Run New Satellite Scan
+      </button>
+
+      <div
+        style="
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 12px;
+          padding: 14px;
+          font-size: 12px;
+          line-height: 1.7;
+          color: #9db8a8;
+        "
+        id="satRecommendation">
+        <strong style="color: var(--white)">AI Recommendation:</strong><br />
+        <span id="satRecText"
+          >Run a satellite scan to get an AI-powered farm health recommendation
+          from Gemma 4.</span
+        >
+      </div>
+      <div class="powered-tag" style="margin-top: 8px">
+        ⚡ Analysis by Gemma 4
+      </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+      <div class="modal">
+        <div class="modal-handle"></div>
+        <div class="modal-title" id="modalTitle">AI Analysis</div>
+        <div class="modal-sub" id="modalSub">Processing your request...</div>
+        <div class="result-box" id="modalResult">
+          <div style="text-align: center; color: var(--green-bright)">
+            ⟳ Analyzing...
+          </div>
+        </div>
+        <button class="close-btn" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+
+    <script>
+      // 🔒 The Gemma 4 API key lives server-side in /api/chat.js (Vercel serverless
+      // function), read from the GEMINI_API_KEY environment variable. Nothing
+      // secret is stored in this file — the browser only ever talks to our own
+      // /api/chat endpoint.
+      const API_URL = '/api/chat';
+
+      // ── TAB NAVIGATION ──
+      function showTab(name) {
+        document
+          .querySelectorAll('.screen')
+          .forEach((s) => s.classList.remove('active'));
+        document
+          .querySelectorAll('.tab')
+          .forEach((t) => t.classList.remove('active'));
+        document.getElementById('screen-' + name).classList.add('active');
+        document
+          .querySelectorAll('.tab')
+          [
+            ['home', 'chat', 'ussd', 'credit', 'satellite'].indexOf(name)
+          ].classList.add('active');
+      }
+
+      function goToChat(msg) {
+        showTab('chat');
+        setTimeout(() => {
+          document.getElementById('chatInput').value = msg;
+          sendMessage();
+        }, 300);
+      }
+
+      // ── GEMMA 4 via Google AI Studio (Gemini API) ──
+
+      // Gemma 4's internal "thinking" mode can leak its reasoning into the visible
+      // reply (numbered analysis, "* User's issue:", etc). This strips that out
+      // even if the API still returns thought content despite thinkingLevel:minimal.
+      function stripThinkingScaffolding(text) {
+        if (!text) return text;
+        let cleaned = text;
+
+        // Remove explicit <think>...</think> blocks if present
+        cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>/gi, '');
+
+        // Some responses put reasoning before a clear "final answer" marker
+        for (const marker of [
+          'Final Answer:',
+          '**Final Answer:**',
+          'Final response:',
+        ]) {
+          const idx = cleaned.indexOf(marker);
+          if (idx !== -1) cleaned = cleaned.slice(idx + marker.length);
+        }
+
+        // Phrases that only ever appear in the model's internal narration about
+        // what it's about to do — never in a real farmer-facing answer. Matching
+        // on these (rather than "any bullet") avoids stripping legitimate
+        // bulleted answers like "* Score: 620/850".
+        const reasoningMarkers =
+          /\b(i will create|i should probably|since no specific|no specific (farmer|data) was provided|let me (think|create)|the user wants|the ai should|to demonstrate|hypothetical (scenario|farmer)|for demonstration purposes|i am ready to help you grow|i need to (analyze|identify|figure)|user'?s?\s+issue:|^role:|^constraint)/i;
+
+        const paragraphs = cleaned
+          .split(/\n\n+/)
+          .map((p) => p.trim())
+          .filter(Boolean);
+        if (paragraphs.length > 1) {
+          const plain = paragraphs.filter((p) => !reasoningMarkers.test(p));
+          if (plain.length && plain.length < paragraphs.length)
+            cleaned = plain.join('\n\n');
+        } else if (reasoningMarkers.test(cleaned)) {
+          // Single-block response that's entirely narration — nothing safe to keep
+          cleaned = '';
+        }
+
+        return cleaned.trim();
+      }
+
+      async function callGemini(prompt, systemCtx, image) {
+        const body = {
+          prompt,
+          system: systemCtx,
+          image:
+            image && image.base64
+              ? { mimeType: image.mimeType, base64: image.base64 }
+              : null,
+        };
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+        if (data.reply) {
+          const cleaned = stripThinkingScaffolding(data.reply);
+          if (cleaned) return cleaned;
+        }
+        throw new Error(data.error || 'No response from Gemma');
+      }
+
+      // ── CHAT ──
+      let isProcessing = false;
+
+      function appendMsg(text, role, imgDataUrl) {
+        const msgs = document.getElementById('chatMessages');
+        const typing = document.getElementById('typingIndicator');
+        const div = document.createElement('div');
+        div.className = 'msg ' + role;
+        const imgHtml = imgDataUrl
+          ? '<img class="msg-img" src="' + imgDataUrl + '" alt="Crop photo">'
+          : '';
+        const escapeHtml = (s) =>
+          s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        if (role === 'ai') {
+          // AI replies come from Gemma as plain text; only line breaks are converted to <br>
+          div.innerHTML =
+            imgHtml +
+            '<div class="msg-sender">🌾 FarmSense AI</div>' +
+            escapeHtml(text).replace(/\n/g, '<br>');
+        } else {
+          div.innerHTML =
+            imgHtml + (text ? escapeHtml(text).replace(/\n/g, '<br>') : '');
+        }
+        msgs.insertBefore(div, typing);
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+
+      function setTyping(show) {
+        document.getElementById('typingIndicator').style.display = show
+          ? 'flex'
+          : 'none';
+        const msgs = document.getElementById('chatMessages');
+        msgs.scrollTop = msgs.scrollHeight;
+      }
+
+      async function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if ((!text && !pendingImage) || isProcessing) return;
+
+        isProcessing = true;
+        const lang = document.getElementById('langSelect').value;
+        document.getElementById('sendBtn').disabled = true;
+
+        const promptText =
+          text ||
+          'Look at this photo of my crop and tell me what is wrong with it, if anything.';
+        appendMsg(
+          promptText,
+          'user',
+          pendingImage ? pendingImage.previewUrl : null,
+        );
+        input.value = '';
+        input.style.height = 'auto';
+        setTyping(true);
+
+        const systemCtx = `You are FarmSense AI, a smart agricultural assistant for Nigerian farmers. 
+You must respond in ${lang} language.
+You help with: crop disease diagnosis, pest control, planting advice, fertilizer recommendations, market prices, and farm financing.
+Always give practical, affordable advice suited to Nigerian farming conditions.
+If the farmer attaches a photo of a crop, plant, leaf, or pest, examine it closely and identify visible symptoms (discoloration, spots, wilting, holes, insects, etc.), name the most likely disease or pest, and give a concrete treatment step.
+Keep responses concise (max 5 sentences). Use simple language farmers understand.
+If user writes in Hausa, Yoruba, Igbo, or Pidgin, respond in the same language.`;
+
+        const imageForCall = pendingImage
+          ? { mimeType: pendingImage.mimeType, base64: pendingImage.base64 }
+          : null;
+        removeImage(); // clear attachment from the input bar now that it's been sent
+
+        const t0 = performance.now();
+        try {
+          const reply = await callGemini(promptText, systemCtx, imageForCall);
+          const elapsed = Math.round(performance.now() - t0);
+          const tokens = Math.round(reply.split(' ').length * 1.3);
+          const tps = Math.round(tokens / (elapsed / 1000));
+          updateAMDStats(elapsed, tps);
+          setTyping(false);
+          appendMsg(reply, 'ai');
+        } catch (e) {
+          setTyping(false);
+          appendMsg(
+            'Sorry, I could not connect right now. Please check your internet and try again. (Error: ' +
+              e.message +
+              ')',
+            'ai',
+          );
+        }
+
+        isProcessing = false;
+        document.getElementById('sendBtn').disabled = false;
+      }
+
+      function sendQuick(msg) {
+        document.getElementById('chatInput').value = msg;
+        sendMessage();
+      }
+
+      // ── IMAGE UPLOAD (crop photo diagnosis) ──
+      let pendingImage = null; // { mimeType, base64, previewUrl }
+
+      function handleImageSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) {
+          alert('Please choose an image file.');
+          return;
+        }
+        if (file.size > 8 * 1024 * 1024) {
+          alert('Photo is too large — please choose one under 8MB.');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          const dataUrl = reader.result; // e.g. "data:image/jpeg;base64,...."
+          const base64 = dataUrl.split(',')[1];
+          pendingImage = { mimeType: file.type, base64, previewUrl: dataUrl };
+          document.getElementById('imgPreviewThumb').src = dataUrl;
+          document.getElementById('imgPreviewName').textContent = file.name;
+          document.getElementById('imgPreviewBar').classList.add('show');
+        };
+        reader.onerror = () =>
+          alert('Could not read that photo — please try another.');
+        reader.readAsDataURL(file);
+        event.target.value = ''; // allow re-selecting the same file later
+      }
+
+      function removeImage() {
+        pendingImage = null;
+        document.getElementById('imgPreviewBar').classList.remove('show');
+        document.getElementById('imgPreviewThumb').src = '';
+        document.getElementById('imgPreviewName').textContent = '';
+      }
+
+      // ── INFERENCE PERFORMANCE TRACKER ──
+      let totalQueries = 0;
+      function updateAMDStats(latencyMs, tokensPerSec) {
+        totalQueries++;
+        const latEl = document.getElementById('amdLatency');
+        const tokEl = document.getElementById('amdTokens');
+        const qEl = document.getElementById('amdQueries');
+        if (latEl) latEl.textContent = latencyMs;
+        if (tokEl) tokEl.textContent = tokensPerSec;
+        if (qEl) qEl.textContent = totalQueries;
+      }
+
+      // ── VOICE ──
+      let recognition = null;
+      let listening = false;
+
+      function toggleMic() {
+        if (
+          !(
+            'webkitSpeechRecognition' in window || 'SpeechRecognition' in window
+          )
+        ) {
+          alert(
+            'Voice input is not supported in this browser. Try Chrome on Android.',
+          );
+          return;
+        }
+        if (listening) {
+          recognition.stop();
+          return;
+        }
+        const SpeechRecognition =
+          window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.lang = 'en-NG';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        recognition.onstart = () => {
+          listening = true;
+          document.getElementById('micBtn').classList.add('listening');
+          document.getElementById('micBtn').textContent = '🔴';
+        };
+
+        recognition.onresult = (e) => {
+          const transcript = e.results[0][0].transcript;
+          document.getElementById('chatInput').value = transcript;
+        };
+
+        recognition.onend = () => {
+          listening = false;
+          document.getElementById('micBtn').classList.remove('listening');
+          document.getElementById('micBtn').textContent = '🎤';
+        };
+
+        recognition.start();
+      }
+
+      // ── USSD SIMULATOR ──
+      let ussdStep = 0;
+      let ussdBuffer = '';
+
+      const ussdFlows = {
+        1: {
+          title: '🌱 Crop Diagnosis',
+          content: `Crop Diagnosis
+━━━━━━━━━━━━━━
+Select your crop:
+1. Maize / Corn
+2. Rice
+3. Cassava
+4. Yam
+5. Tomato
+0. Back`,
+        },
+        2: {
+          title: '🌦️ Weather',
+          content: `Weather Forecast
+━━━━━━━━━━━━━━
+Your Area: Kwara State
+Today: Partly Cloudy 28°C
+Tomorrow: Light Rain 25°C
+Day 3: Sunny 31°C
+
+⚠️ Rain expected - delay
+  spraying for 48hrs
+
+0. Back to Menu`,
+        },
+        3: {
+          title: '📊 Market Prices',
+          content: `Market Prices Today
+━━━━━━━━━━━━━━
+Maize:  ₦18,500/bag ↑
+Rice:   ₦35,000/bag →
+Yam:    ₦42,000/bag ↓
+Tomato: ₦28,000/bag ↑
+Soya:   ₦61,000/bag →
+
+Source: AFEX Exchange
+0. Back to Menu`,
+        },
+        4: {
+          title: '💳 Farm Credit',
+          content: `Farm Credit Check
+━━━━━━━━━━━━━━
+Enter your farmer ID
+or NIN to check your
+credit score and
+loan eligibility.
+
+Type ID number:
+(Demo: 12345)
+0. Back`,
+        },
+        5: {
+          title: '🐛 Pest Alert',
+          content: `⚠️ ACTIVE PEST ALERTS
+━━━━━━━━━━━━━━
+Kano: Fall Armyworm
+  ► Use Emamectin
+Sokoto: Locust risk
+  ► Report to NAQS
+Kwara: Stalk Borer
+  ► Apply Cypermethrin
+
+Reply 0 to go back`,
+        },
+        12345: {
+          title: '💳 Credit Result',
+          content: `Credit Check Result
+━━━━━━━━━━━━━━
+Farmer: Musa A.
+Score: 782 / 850
+Status: ELIGIBLE ✓
+Max Loan: ₦350,000
+Rate: 9% per annum
+Bank: BOA Nigeria
+
+Reply 1 to Apply
+Reply 0 for Menu`,
+        },
+      };
+
+      function ussdPress(key) {
+        ussdBuffer += key;
+        document.getElementById('ussdInput').textContent = ussdBuffer;
+      }
+
+      function ussdClear() {
+        ussdBuffer = ussdBuffer.slice(0, -1);
+        document.getElementById('ussdInput').textContent = ussdBuffer;
+      }
+
+      function ussdSend() {
+        const key = ussdBuffer;
+        ussdBuffer = '';
+        document.getElementById('ussdInput').textContent = '';
+
+        if (key === '0') {
+          document.getElementById('ussdTitle').textContent = '📶 *347*55#';
+          document.getElementById('ussdContent').textContent =
+            `Welcome to FarmSense AI
+━━━━━━━━━━━━━━
+1. Crop Diagnosis
+2. Weather Forecast
+3. Market Prices
+4. Farm Credit
+5. Pest Alert
+0. Exit
+
+Reply with number:`;
+          return;
+        }
+
+        const flow = ussdFlows[key];
+        if (flow) {
+          document.getElementById('ussdTitle').textContent = flow.title;
+          document.getElementById('ussdContent').textContent = flow.content;
+        } else {
+          document.getElementById('ussdContent').textContent = `Invalid option.
+Please try again.
+
+Press 0 to go back
+to the main menu.`;
+        }
+      }
+
+      // ── CREDIT CHECK ──
+      async function checkCredit() {
+        const name = document.getElementById('creditName').value.trim();
+        const state = document.getElementById('creditState').value;
+        const crop = document.getElementById('creditCrop').value;
+        const farmSize = document.getElementById('creditFarmSize').value;
+        const loanAmount = document.getElementById('creditLoanAmount').value;
+
+        const missing = [];
+        if (!name) missing.push('Full Name');
+        if (!state) missing.push('State');
+        if (!crop) missing.push('Main Crop');
+        if (!farmSize) missing.push('Farm Size');
+        if (!loanAmount) missing.push('Loan Amount');
+
+        if (missing.length) {
+          openModal('AI Credit Analysis', 'Missing information');
+          document.getElementById('modalResult').innerHTML =
+            'Please fill in: <strong>' +
+            missing.join(', ') +
+            '</strong> before checking eligibility.';
+          return;
+        }
+
+        openModal(
+          'AI Credit Analysis',
+          'Checking your farm credit eligibility...',
+        );
+
+        const systemCtx = `You are a Nigerian agricultural finance AI for FarmSense AI platform.
+You will be given a specific farmer's real application data below. Use ONLY that data —
+do not invent a hypothetical farmer, do not ask for more information, and do not explain
+your process. Assess this exact farmer's credit eligibility and give a realistic credit
+score (out of 850), status, recommended loan amount, interest rate, and one line of key
+advice, formatted clearly with those five labels.
+Be encouraging but realistic. Keep it under 150 words.`;
+
+        const prompt = `Farmer application data:
+- Name: ${name}
+- State: ${state}
+- Main crop: ${crop}
+- Farm size: ${farmSize} hectares
+- Loan amount requested: ₦${Number(loanAmount).toLocaleString()}
+
+Assess this farmer's credit eligibility now, using only the data above.`;
+
+        try {
+          const reply = await callGemini(prompt, systemCtx);
+          document.getElementById('modalResult').innerHTML = reply.replace(
+            /\n/g,
+            '<br>',
+          );
+        } catch (e) {
+          document.getElementById('modalResult').textContent =
+            'Demo Score: 742/850 ✓ Eligible\nRecommended Loan: ₦280,000\nRate: 9% per annum via Bank of Agriculture\n\nTip: Register on the e-Farmer portal to improve your score.';
+        }
+      }
+
+      // ── SATELLITE SCAN ──
+      async function scanFarm() {
+        const ndvi = (Math.random() * 0.4 + 0.5).toFixed(2);
+        const soil = Math.floor(Math.random() * 40 + 30);
+        const cover = Math.floor(Math.random() * 20 + 75);
+        const risks = ['Low', 'Medium', 'Medium', 'High'];
+        const risk = risks[Math.floor(Math.random() * risks.length)];
+
+        document.getElementById('ndviVal').textContent = ndvi;
+        document.getElementById('soilVal').textContent = soil + '%';
+        document.getElementById('coverVal').textContent = cover + '%';
+        document.getElementById('riskVal').textContent = risk;
+
+        document.getElementById('ndviVal').className =
+          'sat-stat-val ' + (ndvi > 0.6 ? 'good' : ndvi > 0.4 ? 'warn' : 'bad');
+        document.getElementById('soilVal').className =
+          'sat-stat-val ' + (soil > 50 ? 'good' : soil > 35 ? 'warn' : 'bad');
+        document.getElementById('riskVal').className =
+          'sat-stat-val ' +
+          (risk === 'Low' ? 'good' : risk === 'Medium' ? 'warn' : 'bad');
+
+        // Call Gemma 4 for satellite recommendation
+        const recEl = document.getElementById('satRecText');
+        if (recEl) {
+          recEl.textContent = '⚡ Gemma 4 analyzing satellite data...';
+          const systemCtx =
+            'You are an agricultural satellite AI for Nigerian farms. Given satellite readings, give a concise 2-3 sentence practical recommendation for the farmer. Be specific and actionable.';
+          const prompt = `Satellite scan results for Nigerian farm: NDVI=${ndvi} (vegetation health), Soil Moisture=${soil}%, Crop Cover=${cover}%, Disease Risk=${risk}. Give a practical recommendation.`;
+          try {
+            const t0 = performance.now();
+            const rec = await callGemini(prompt, systemCtx);
+            const elapsed = Math.round(performance.now() - t0);
+            updateAMDStats(
+              elapsed,
+              Math.round((rec.split(' ').length * 1.3) / (elapsed / 1000)),
+            );
+            recEl.textContent = rec;
+          } catch (e) {
+            recEl.textContent = `NDVI ${ndvi} suggests ${ndvi > 0.6 ? 'healthy' : 'stressed'} vegetation. Soil moisture at ${soil}% — ${soil < 40 ? 'consider irrigation within 48hrs.' : 'adequate for now.'} Disease risk is ${risk} — ${risk === 'High' ? 'apply fungicide immediately.' : 'monitor closely.'}`;
+          }
+        }
+      }
+
+      // ── MODAL ──
+      function openModal(title, sub) {
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalSub').textContent = sub;
+        document.getElementById('modalResult').innerHTML =
+          '<div style="text-align:center;color:var(--green-bright);">⟳ Analyzing with Gemma 4...</div>';
+        document.getElementById('modalOverlay').classList.add('open');
+      }
+
+      function closeModal(e) {
+        if (
+          !e ||
+          e.target === document.getElementById('modalOverlay') ||
+          e.type === 'click'
+        ) {
+          document.getElementById('modalOverlay').classList.remove('open');
+        }
+      }
+    </script>
+  </body>
+</html>
